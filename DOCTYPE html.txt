@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teejay Fanilo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim: rgba(201,168,76,0.18);
+      --black: #080808;
+      --dark: #0f0f0f;
+      --dark2: #141414;
+      --white: #f5f2ec;
+      --white-dim: rgba(245,242,236,0.6);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ─── GRAIN OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.55;
+    }
+
+    /* ─── GOLD LINE DIVIDER ─── */
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 2rem auto;
+    }
+
+    /* ─── FADE-IN SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s cubic-bezier(.22,1,.36,1), transform 0.9s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.3s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+
+    /* ═══════════════════════════════
+       SECTION 1 — HERO
+    ═══════════════════════════════ */
+    #hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem 1.5rem 4rem;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, #1a1507 0%, var(--black) 70%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* top ornament */
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--gold));
+    }
+
+    .hero-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 200;
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.4rem;
+      margin-top: 2rem;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2.8rem, 9vw, 5.5rem);
+      line-height: 1.08;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1rem, 3.5vw, 1.4rem);
+      color: var(--white-dim);
+      max-width: 480px;
+      line-height: 1.85;
+      margin: 1.6rem auto 2.8rem;
+    }
+
+    /* Portrait image */
+    .portrait-wrap {
+      width: min(320px, 75vw);
+      aspect-ratio: 3/4;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,168,76,0.2);
+    }
+
+    .portrait-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      transition: transform 6s ease;
+    }
+
+    .portrait-wrap:hover img { transform: scale(1.05); }
+
+    /* Gold frame corners */
+    .portrait-wrap::before,
+    .portrait-wrap::after {
+      content: '';
+      position: absolute;
+      width: 28px; height: 28px;
+      border-color: var(--gold);
+      border-style: solid;
+      z-index: 2;
+      opacity: 0.7;
+    }
+    .portrait-wrap::before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+    .portrait-wrap::after  { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+
+    .portrait-inner-corners {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .portrait-inner-corners::before,
+    .portrait-inner-corners::after {
+      content: '';
+      position: absolute;
+      width: 28px; height: 28px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: 0.7;
+    }
+    .portrait-inner-corners::before { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
+    .portrait-inner-corners::after  { bottom: 10px; left: 10px; border-width: 0 0 1px 1px; }
+
+    /* ═══════════════════════════════
+       SECTION 2 — MESSAGE
+    ═══════════════════════════════ */
+    #message {
+      padding: 6rem 1.5rem;
+      background: linear-gradient(to bottom, var(--black), var(--dark2), var(--black));
+      text-align: center;
+      position: relative;
+    }
+
+    .message-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(1.35rem, 4.5vw, 2rem);
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 auto;
+      color: var(--white);
+      position: relative;
+    }
+
+    .message-quote::before {
+      content: '"';
+      font-size: 5rem;
+      line-height: 0;
+      color: var(--gold);
+      opacity: 0.25;
+      position: absolute;
+      top: 0.6rem; left: -1.5rem;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* ═══════════════════════════════
+       SECTION 3 — SECOND IMAGE
+    ═══════════════════════════════ */
+    #second-image {
+      padding: 2rem 1.5rem 5rem;
+      background: var(--black);
+      display: flex;
+      justify-content: center;
+    }
+
+    .cinematic-wrap {
+      width: min(480px, 90vw);
+      aspect-ratio: 4/5;
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.9), 0 0 0 1px rgba(201,168,76,0.15);
+    }
+
+    .cinematic-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 7s ease;
+      filter: brightness(0.88) contrast(1.05);
+    }
+
+    .cinematic-wrap:hover img { transform: scale(1.06); }
+
+    /* Cinematic letterbox lines */
+    .cinematic-wrap::before,
+    .cinematic-wrap::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 42px;
+      background: rgba(0,0,0,0.7);
+      z-index: 2;
+    }
+    .cinematic-wrap::before { top: 0; }
+    .cinematic-wrap::after  { bottom: 0; }
+
+    /* ═══════════════════════════════
+       SECTION 4 — PRIVATE ACCESS
+    ═══════════════════════════════ */
+    #access {
+      padding: 5rem 1.5rem 3rem;
+      background: linear-gradient(to bottom, var(--black), #0c0b07);
+      text-align: center;
+    }
+
+    .access-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .access-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 7vw, 3.2rem);
+      margin-bottom: 0.5rem;
+    }
+
+    .access-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 380px;
+      margin: 2.8rem auto 0;
+    }
+
+    /* Buttons */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1rem 1.8rem;
+      border-radius: 2px;
+      border: 1px solid rgba(201,168,76,0.3);
+      background: rgba(201,168,76,0.04);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: background 0.35s, border-color 0.35s, color 0.35s, box-shadow 0.35s, transform 0.2s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+
+    .btn:hover {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.10);
+      box-shadow: 0 0 28px rgba(201,168,76,0.12), inset 0 0 16px rgba(201,168,76,0.04);
+      transform: translateY(-2px);
+      color: var(--gold-light);
+    }
+
+    .btn:hover::after { opacity: 1; }
+
+    .btn:active { transform: translateY(0); }
+
+    .btn svg {
+      flex-shrink: 0;
+      opacity: 0.75;
+    }
+
+    .btn-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 1.8rem;
+      border-radius: 2px;
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--white-dim);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 200;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      background: transparent;
+    }
+
+    /* ═══════════════════════════════
+       SECTION 5 — SAVE CONTACT
+    ═══════════════════════════════ */
+    #save-contact {
+      padding: 3rem 1.5rem 6rem;
+      background: #0c0b07;
+      text-align: center;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.1rem 2.5rem;
+      border-radius: 2px;
+      border: 1px solid var(--gold);
+      background: linear-gradient(135deg, rgba(201,168,76,0.18) 0%, rgba(201,168,76,0.06) 100%);
+      color: var(--gold-light);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      font-size: 0.78rem;
+      letter-spacing: 0.25em;
+      text-decoration: none;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.35s, box-shadow 0.35s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, var(--gold) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      z-index: -1;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 40px rgba(201,168,76,0.25), 0 8px 32px rgba(0,0,0,0.5);
+      background: linear-gradient(135deg, rgba(201,168,76,0.28) 0%, rgba(201,168,76,0.1) 100%);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:hover::before { opacity: 0.08; }
+
+    .save-hint {
+      margin-top: 1.2rem;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(201,168,76,0.35);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(201,168,76,0.08);
+      font-size: 0.58rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.15);
+      background: #0c0b07;
+    }
+
+    /* ─── SCROLL INDICATOR ─── */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0.4;
+      animation: fadeInOut 2.5s ease-in-out infinite;
+    }
+
+    .scroll-indicator span {
+      font-size: 0.5rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollDrop 2.5s ease-in-out infinite;
+    }
+
+    @keyframes scrollDrop {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
+      50%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
+    }
+
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.25; }
+      50%       { opacity: 0.55; }
+    }
+
+    /* ─── PLACEHOLDER IMAGE (when no real image) ─── */
+    .img-placeholder {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #1a1710 0%, #0f0e0a 50%, #1c1a13 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .img-placeholder svg { opacity: 0.2; }
+
+    /* ─── HERO INITIAL ANIMATION ─── */
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-eyebrow  { animation: heroFadeUp 1s ease 0.3s both; }
+    .hero-title    { animation: heroFadeUp 1s ease 0.55s both; }
+    .hero-subtitle { animation: heroFadeUp 1s ease 0.8s both; }
+    .portrait-wrap { animation: heroFadeUp 1.1s ease 1.05s both; }
+    .scroll-indicator { animation: heroFadeUp 1s ease 1.5s both, fadeInOut 2.5s ease-in-out 2.5s infinite; }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ SECTION 1 — HERO ═══ -->
+  <section id="hero">
+    <p class="hero-eyebrow">Teejay Fanilo &nbsp;·&nbsp; Madagascar</p>
+
+    <h1 class="hero-title">
+      Welcome to<br/><em>my world</em>
+    </h1>
+
+    <p class="hero-subtitle">
+      Félicitations.<br/>
+      Si tu es arrivé ici grâce à ma carte,<br/>
+      c'est que notre rencontre n'était peut-être pas un hasard.
+    </p>
+
+    <!-- ── Portrait ── -->
+    <div class="portrait-wrap">
+      <div class="portrait-inner-corners"></div>
+      <!-- ============================================================
+           IMAGE 1 — REMPLACE LE LIEN CI-DESSOUS PAR TON URL SYSTEM.IO
+           Exemple : src="https://ton-compte.systeme.io/images/ta-photo.jpg"
+      ============================================================ -->
+      <img src="COLLE-ICI-TON-LIEN-SYSTEM.IO-IMAGE-1" alt="Teejay Fanilo" />
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Découvrir</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 2 — MESSAGE ═══ -->
+  <section id="message">
+    <div class="divider reveal"></div>
+    <p class="message-quote reveal reveal-delay-1">
+      Tu es sûrement quelqu'un d'important pour moi.<br/>
+      Certaines rencontres méritent d'être découvertes.
+    </p>
+    <div class="divider reveal reveal-delay-2"></div>
+  </section>
+
+  <!-- ═══ SECTION 3 — SECOND IMAGE ═══ -->
+  <section id="second-image">
+    <div class="cinematic-wrap reveal">
+      <!-- ============================================================
+           IMAGE 2 — REMPLACE LE LIEN CI-DESSOUS PAR TON URL SYSTEM.IO
+           Exemple : src="https://ton-compte.systeme.io/images/ta-photo-2.jpg"
+      ============================================================ -->
+      <img src="COLLE-ICI-TON-LIEN-SYSTEM.IO-IMAGE-2" alt="Teejay Fanilo" style="width:100%;height:100%;object-fit:cover;object-position:center;transition:transform 7s ease;filter:brightness(0.88) contrast(1.05);" />
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 4 — PRIVATE ACCESS ═══ -->
+  <section id="access">
+    <p class="access-label reveal">Accès privé</p>
+    <h2 class="access-title reveal reveal-delay-1">Private Access</h2>
+    <div class="divider reveal reveal-delay-2"></div>
+
+    <div class="access-grid">
+
+      <!-- Instagram -->
+      <a href="#" class="btn reveal reveal-delay-1">
+        <!-- Add your Instagram URL to href above -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+        Instagram &nbsp;—&nbsp; Teejay Fanilo
+      </a>
+
+      <!-- Facebook -->
+      <a href="https://web.facebook.com/profile.php?id=61586978974779" target="_blank" rel="noopener" class="btn reveal reveal-delay-2">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+        </svg>
+        Facebook &nbsp;—&nbsp; Teejay Fanilo
+      </a>
+
+      <!-- Phone 1 -->
+      <a href="tel:+261377404959" class="btn reveal reveal-delay-3">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.06 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        037 740 4959
+      </a>
+
+      <!-- Phone 2 -->
+      <a href="tel:+261385576164" class="btn reveal">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 12 19.79 19.79 0 0 1 1.08 3.4 2 2 0 0 1 3.06 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        038 557 6164
+      </a>
+
+      <!-- Location -->
+      <div class="btn-info reveal reveal-delay-1">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(201,168,76,0.55)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        Madagascar &nbsp;—&nbsp; Toliara
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ SECTION 5 — SAVE CONTACT ═══ -->
+  <section id="save-contact">
+    <div class="divider reveal"></div>
+
+    <!-- ============================================================
+         OPTION A — LIEN DIRECT (recommandé si tu héberges le .vcf sur system.io)
+         Remplace le href ci-dessous par l'URL de ton fichier .vcf uploadé sur system.io
+         Exemple : href="https://ton-compte.systeme.io/files/Teejay-Fanilo.vcf"
+    ============================================================ -->
+    <a href="COLLE-ICI-TON-LIEN-SYSTEM.IO-FICHIER-VCF"
+       download="Teejay-Fanilo.vcf"
+       class="btn-primary reveal reveal-delay-1">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Enregistrer mon contact
+    </a>
+
+    <!-- OPTION B — Génération automatique sans lien externe (fonctionne toujours en backup) -->
+    <p class="save-hint reveal reveal-delay-2" style="margin-top:0.8rem;">
+      <span onclick="downloadVCF()" style="cursor:pointer;text-decoration:underline;color:rgba(201,168,76,0.45);font-size:0.58rem;letter-spacing:0.2em;">
+        ou télécharger directement
+      </span>
+    </p>
+
+    <p class="save-hint reveal reveal-delay-2">Ajouter à vos contacts</p>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    &copy; 2025 &nbsp;Teejay Fanilo &nbsp;·&nbsp; Madagascar
+  </footer>
+
+  <script>
+    /* ─── SCROLL REVEAL ─── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ─── DOWNLOAD VCF ─── */
+    function downloadVCF() {
+      const vcf = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        'FN:Teejay Fanilo',
+        'N:Fanilo;Teejay;;;',
+        'TEL;TYPE=CELL:+261377404959',
+        'TEL;TYPE=CELL:+261385576164',
+        'ADR;TYPE=HOME:;;Toliara;Madagascar',
+        'NOTE:Madagascar — Toliara',
+        'END:VCARD'
+      ].join('\r\n');
+
+      const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'Teejay-Fanilo.vcf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    /* ─── HIDE SCROLL INDICATOR ON SCROLL ─── */
+    window.addEventListener('scroll', () => {
+      const si = document.querySelector('.scroll-indicator');
+      if (si) si.style.opacity = window.scrollY > 80 ? '0' : '';
+    }, { passive: true });
+  </script>
+</body>
+</html>

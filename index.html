@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philosophie@teejayfanilo | Lecture Confort</title>
+    <link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --couleur-fond: #F8F4EA;
+            --couleur-texte: #333333;
+            --couleur-texte-secondaire: #666666;
+            --couleur-accent: #8B7355;
+            --interligne: 1.6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Literata", Georgia, "Times New Roman", Times, serif;
+            font-size: 1.1rem;
+            line-height: var(--interligne);
+            color: var(--couleur-texte);
+            background-color: var(--couleur-fond);
+            padding: 0;
+            margin: 0;
+        }
+
+        .entete-ebook {
+            background-color: var(--couleur-fond);
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .titre-principal {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--couleur-accent);
+        }
+
+        #boutonSommaire {
+            background: none;
+            border: 2px solid var(--couleur-accent);
+            color: var(--couleur-accent);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        #boutonSommaire:hover {
+            background-color: var(--couleur-accent);
+            color: var(--couleur-fond);
+        }
+
+        .navigation-sommaire {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background-color: var(--couleur-fond);
+            border-right: 1px solid rgba(0,0,0,0.08);
+            padding: 2rem 1.5rem;
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            z-index: 200;
+            box-shadow: 4px 0 12px rgba(0,0,0,0.1);
+        }
+
+        .navigation-sommaire.actif {
+            left: 0;
+        }
+
+        .navigation-sommaire h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--couleur-accent);
+        }
+
+        .navigation-sommaire ol {
+            list-style: none;
+            counter-reset: section;
+        }
+
+        .navigation-sommaire li {
+            margin-bottom: 1rem;
+        }
+
+        .navigation-sommaire a {
+            color: var(--couleur-texte);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem 0;
+            transition: color 0.2s ease;
+        }
+
+        .navigation-sommaire a:hover {
+            color: var(--couleur-accent);
+        }
+
+        .navigation-sommaire li::before {
+            counter-increment: section;
+            content: counter(section) ". ";
+            font-weight: 600;
+            color: var(--couleur-accent);
+        }
+
+        .contenu-lecture {
+            max-width: 35em;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .partie h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--couleur-accent);
+            text-align: left;
+        }
+
+        .chapitre {
+            margin-bottom: 3rem;
+        }
+
+        .chapitre h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--couleur-texte);
+            text-align: left;
+        }
+
+        .chapitre h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--couleur-texte);
+            text-align: left;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .concept-cle {
+            font-weight: 600;
+            color: var(--couleur-accent);
+        }
+
+        .bloc-important {
+            background-color: rgba(139, 115, 85, 0.07);
+            border-left: 4px solid var(--couleur-accent);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .bloc-important p {
+            margin-bottom: 0;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+            line-height: var(--interligne);
+        }
+
+        .pied-de-page {
+            text-align: center;
+            padding: 2rem;
+            color: var(--couleur-texte-secondaire);
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .bouton-retour-haut {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background-color: var(--couleur-accent);
+            color: var(--couleur-fond);
+            text-align: center;
+            line-height: 50px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .bouton-retour-haut.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .bouton-retour-haut:hover {
+            background-color: var(--couleur-texte);
+        }
+
+        @media (min-width: 1024px) {
+            body {
+                font-size: 1.15rem;
+            }
+
+            .navigation-sommaire {
+                left: 0;
+                width: 250px;
+                box-shadow: none;
+            }
+
+            #boutonSommaire {
+                display: none;
+            }
+
+            .contenu-lecture {
+                margin-left: 270px;
+                padding: 3rem 4rem 4rem;
+            }
+
+            .entete-ebook {
+                padding-left: 280px;
+            }
+        }
+
+        @media print {
+            .navigation-sommaire,
+            .bouton-retour-haut,
+            #boutonSommaire {
+                display: none;
+            }
+
+            .contenu-lecture {
+                margin-left: 0;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="entete-ebook">
+        <h1 class="titre-principal">Philosophie@teejayfanilo</h1>
+        <button id="boutonSommaire" aria-label="Ouvrir le sommaire">☰</button>
+    </header>
+
+    <nav id="sommaire" class="navigation-sommaire" aria-label="Sommaire">
+        <h2>Sommaire</h2>
+        <ol>
+            <li><a href="#partie-1">Introduction à la Philosophie</a></li>
+            <li><a href="#lecon-2">La Conscience et l'Inconscient</a></li>
+            <li><a href="#lecon-3">La Liberté</a></li>
+            <li><a href="#lecon-4">La Morale et le Devoir</a></li>
+            <li><a href="#lecon-5">Le Travail et la Technique</a></li>
+            <li><a href="#lecon-6">L'État et la Justice</a></li>
+            <li><a href="#lecon-7">La Science et la Vérité</a></li>
+            <li><a href="#resume-general">Résumé Général</a></li>
+        </ol>
+    </nav>
+
+    <main id="contenuPrincipal" class="contenu-lecture">
+        <article class="partie">
+            <h1 id="partie-1">PARTIE 1 : INTRODUCTION À LA PHILOSOPHIE</h1>
+            
+            <section id="chapitre-1-1" class="chapitre">
+                <h2>I. De la Nature de l'Homme : Qui sommes-nous ?</h2>
+                
+                <p>L'homme est un être complexe que l'on peut regarder à travers trois lunettes différentes :</p>
+                
+                <p><span class="concept-cle">La Vision Scientifique (Matérialisme)</span> : L'homme est un corps, un ensemble de cellules et de réactions chimiques. On réduit l'humain à sa matérialité. C'est le domaine du « Comment ».</p>
+                
+                <p><span class="concept-cle">La Vision Sociologique (Être Social)</span> : L'homme n'existe que par les autres. Comme on dit chez nous, « Ny olona velona tsy maintsy miara-monina » (L'homme vivant doit vivre ensemble). C'est le Fokonolona, la culture et l'éducation.</p>
+                
+                <p><span class="concept-cle">La Vision Philosophique (Être de Raison)</span> : L'homme est un « Animal Raisonnable ». Il possède une âme (ou un esprit) qui lui permet de penser, de juger et de décider librement.</p>
+                
+                <div class="bloc-important">
+                    <p><strong>Synthèse (Les traits distinctifs) :</strong> Ce qui sépare l'homme de l'animal, c'est la Conscience (se savoir exister), la Raison (calculer et prévoir) et le Langage (échanger des idées abstraites).</p>
+                </div>
+            </section>
+            
+            <section id="chapitre-1-2" class="chapitre">
+                <h2>II. L'Homme face à l'Existence</h2>
+                
+                <p>L'homme a deux types de préoccupations :</p>
+                
+                <p><span class="concept-cle">Problèmes Physiques</span> : Besoins primaires (manger, boire, dormir). C'est la survie.</p>
+                
+                <p><span class="concept-cle">Problèmes Métaphysiques</span> : Questions qui n'ont pas de réponse visible. « D'où venons-nous ? Pourquoi la souffrance ? Y a-t-il une vie après la mort ? »</p>
+            </section>
+            
+            <section id="chapitre-1-3" class="chapitre">
+                <h2>III. Histoire : Du Mythe au Logos (La naissance de la philo)</h2>
+                
+                <p><span class="concept-cle">Avant la Philo</span> : On expliquait le monde par des Mythes (histoires de dieux).</p>
+                
+                <p><span class="concept-cle">Les Présocratiques</span> : Les premiers à chercher le principe naturel des choses (l'Archè). Ils utilisent la raison, pas la magie.</p>
+                
+                <p><span class="concept-cle">Socrate (Le tournant)</span> : Il ramène la philosophie vers l'homme. Sa devise : « Connais-toi toi-même ». Il ne s'intéresse plus seulement aux étoiles, mais à la justice et à la vertu.</p>
+            </section>
+            
+            <section id="chapitre-1-4" class="chapitre">
+                <h2>IV. Qu'est-ce que la Philosophie ? (Définitions)</h2>
+                
+                <p><span class="concept-cle">Étymologie</span> : Philo (Amour/Recherche) + Sophia (Sagesse). Le philosophe n'est pas celui qui sait tout, c'est celui qui cherche toute sa vie.</p>
+                
+                <h3>La Sagesse :</h3>
+                <ul>
+                    <li><span class="concept-cle">Sens Gnoséologique</span> : Avoir une connaissance vraie et solide.</li>
+                    <li><span class="concept-cle">Sens Moral</span> : Savoir bien agir pour être heureux.</li>
+                </ul>
+                
+                <div class="bloc-important">
+                    <p><strong>L'Esprit Philosophique :</strong> C'est un esprit de Doute, d'Étonnement et de Critique. Ne jamais accepter une idée sans preuve.</p>
+                </div>
+            </section>
+            
+            <section id="chapitre-1-5" class="chapitre">
+                <h2>V. Les Moyens et la Vérité</h2>
+                
+                <p><span class="concept-cle">Moyens</span> : La Pensée (intérieure) et le Langage (extérieure). Sans mots, la pensée est floue.</p>
+                
+                <p><span class="concept-cle">La Vérité</span> : En science, elle est souvent fixe. En philosophie, elle est Plurielle et Relative : chaque grand penseur apporte un éclairage différent. On ne « trouve » pas la vérité, on s'en approche par l'Argumentation.</p>
+                
+                <div class="bloc-important">
+                    <p><strong>Le « Résumé pour un enfant de 10 ans » :</strong> Faire de la philosophie, c'est comme être un explorateur. Mais au lieu de découvrir des îles avec un bateau, tu découvres des idées avec ton cerveau. La science te donne la boussole, mais la philosophie te demande : « Est-ce que ça vaut la peine d'aller là-bas ? »</p>
+                </div>
+                
+                <p><span class="concept-cle">Le Piège à Éviter au BACC</span> : Ne confonds jamais « La Philosophie » (la discipline) et « Une philosophie » (une opinion personnelle). Sur ta copie, ne dis pas « Ma philosophie est que… ». Dis plutôt : « Selon une approche rationnelle… » ou « L'analyse philosophique nous montre que… ».</p>
+            </section>
+            
+            <section id="chapitre-1-6" class="chapitre">
+                <h2>Pratiquons ensemble (Exercice Type BACC)</h2>
+                
+                <p>Voici un petit sujet de réflexion pour voir si tu as assimilé la leçon : « L'homme est-il seulement un corps ? »</p>
+                
+                <p>D'après le cours ci-dessus :</p>
+                <ul>
+                    <li>Quel domaine dirait « Oui » ? (La science ou la philosophie ?)</li>
+                    <li>Quel est l'élément « invisible » que la philosophie ajoute pour dire « Non » ?</li>
+                    <li>Si l'homme n'était qu'un corps (comme une voiture), pourrait-il être responsable de ses actes ?</li>
+                </ul>
+            </section>
+        </article>
+        
+        <article class="partie">
+            <h1 id="lecon-2">LEÇON 2 : LA CONSCIENCE ET L'INCONSCIENT</h1>
+            
+            <section class="chapitre">
+                <h2>1. L'Idée en Bref (Le « Pitch »)</h2>
+                
+                <p>La Conscience, c'est la lumière qui s'allume dans ta tête et qui te permet de dire « Je ». Mais la philosophie (et la psychologie) a découvert qu'il y a une pièce cachée dans notre cerveau où la lumière est éteinte : c'est l'Inconscient.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>2. L'Explication « Enfant de 10 ans »</h2>
+                
+                <p>Imagine que ton esprit est comme une pirogue sur le fleuve Tsiribihina.</p>
+                
+                <p><span class="concept-cle">La Conscience</span> : C'est toi, le rameur. Tu vois le paysage, tu décides de tourner à gauche ou à droite, tu sais que tu es sur l'eau. Tu es le « chef » visible.</p>
+                
+                <p><span class="concept-cle">L'Inconscient</span> : Ce sont les courants sous l'eau que tu ne vois pas. Parfois, la pirogue dévie toute seule parce qu'un courant invisible est plus fort que toi. Tu ne sais pas pourquoi tu as peur d'un crocodile alors qu'il n'y en a pas, ou pourquoi tu as fait un rêve bizarre la nuit dernière. Ce courant, c'est ce qui se passe dans ton dos, à l'intérieur de toi.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>3. Les Mots-Clés Techniques (À mettre sur la copie)</h2>
+                
+                <ul>
+                    <li><span class="concept-cle">Sujet</span> : L'homme en tant qu'être capable de dire « Je ».</li>
+                    <li><span class="concept-cle">Introspection</span> : L'action de regarder à l'intérieur de soi pour s'analyser.</li>
+                    <li><span class="concept-cle">Le « Cogito »</span> : Vient de l'expression de Descartes « Cogito ergo sum » (Je pense, donc je suis). C'est la preuve que la conscience existe.</li>
+                    <li><span class="concept-cle">Refoulement</span> : Le mécanisme de défense qui pousse nos souvenirs douloureux ou nos envies interdites dans l'inconscient.</li>
+                    <li><span class="concept-cle">Psychanalyse</span> : La méthode inventée par Sigmund Freud pour soigner les gens en explorant leur inconscient.</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>4. L'Exemple Concret (Le duel Descartes vs Freud)</h2>
+                
+                <p>Au BACC, on adore opposer ces deux messieurs :</p>
+                
+                <p><span class="concept-cle">Descartes</span> dit : « L'homme est totalement maître de lui-même grâce à sa conscience. » (La pirogue obéit toujours au rameur).</p>
+                
+                <p><span class="concept-cle">Freud</span> répond : « Le moi n'est pas maître dans sa propre maison. » Il existe des forces en nous (traumatismes d'enfance, désirs cachés) que nous ne contrôlons pas.</p>
+                
+                <div class="bloc-important">
+                    <p><strong>Exercice type :</strong> Un « Lapsus ». Tu veux dire « Bonjour Monsieur le Professeur », mais tu dis « Bonjour Monsieur le Malheur ». Analyse : Ta conscience voulait être polie, mais ton inconscient a révélé ce que tu penses vraiment du cours !</p>
+                </div>
+            </section>
+            
+            <section class="chapitre">
+                <h2>5. Le Piège à Éviter</h2>
+                
+                <p>L'erreur : Utiliser l'inconscient comme une excuse. Si tu frappes quelqu'un et que tu dis au juge : « C'est mon inconscient, je ne suis pas responsable », ça ne marche pas en philosophie. La plupart des philosophes (comme Alain ou Sartre) disent que l'inconscient n'est pas une excuse pour fuir ses devoirs. Tu restes responsable de ce que tu fais.</p>
+                
+                <div class="bloc-important">
+                    <p><strong>Résumé pour ta fiche de révision :</strong></p>
+                    <ul>
+                        <li>Conscience = Connaissance de soi et du monde (Lumière).</li>
+                        <li>Inconscient = Désirs et souvenirs cachés (Ombre).</li>
+                        <li>Grand débat = Suis-je totalement libre (Descartes) ou suis-je influencé par mon passé (Freud) ?</li>
+                    </ul>
+                </div>
+            </section>
+        </article>
+        
+        <article class="partie">
+            <h1 id="lecon-3">LEÇON 3 : LA LIBERTÉ</h1>
+            
+            <section class="chapitre">
+                <h2>1. L'Idée en Bref (Le « Pitch »)</h2>
+                
+                <p>La liberté, ce n'est pas juste « faire tout ce qu'on veut ». C'est la capacité de l'homme à être l'auteur de ses propres choix en utilisant sa Raison, même quand il y a des obstacles ou des lois.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>2. L'Explication « Enfant de 10 ans »</h2>
+                
+                <p>Imagine que tu es un chauffeur de Taxi-brousse entre Tana et Majunga.</p>
+                
+                <p><span class="concept-cle">Ce que les gens croient (Liberté totale)</span> : Tu penses que tu es libre si tu peux rouler à n'importe quelle vitesse, quitter la route et aller dans les champs. Mais si tu fais ça, tu vas avoir un accident ou t'enliser. Ce n'est pas de la liberté, c'est de l'imprudence.</p>
+                
+                <p><span class="concept-cle">La vraie liberté (Liberté philosophique)</span> : Tu es libre quand tu maîtrises ton véhicule, que tu connais le code de la route et que tu décides toi-même de ta destination. Les règles (le code de la route) ne t'empêchent pas de rouler, elles permettent au contraire que tout le monde puisse rouler sans mourir.</p>
+                
+                <div class="bloc-important">
+                    <p><strong>La liberté, c'est choisir de suivre une règle qu'on s'est donnée à soi-même.</strong></p>
+                </div>
+            </section>
+            
+            <section class="chapitre">
+                <h2>3. Les Mots-Clés Techniques (À placer sur ta copie)</h2>
+                
+                <ul>
+                    <li><span class="concept-cle">Le Déterminisme</span> : C'est l'idée que tout ce qu'on fait est causé par quelque chose d'autre (nos gènes, notre éducation, les lois de la physique). Si le déterminisme est vrai, la liberté est une illusion.</li>
+                    <li><span class="concept-cle">Le Libre-Arbitre</span> : La capacité de choisir entre deux choses, sans être forcé par quoi que ce soit.</li>
+                    <li><span class="concept-cle">L'Autonomie</span> : Du grec Auto (soi-même) et Nomos (loi). C'est se donner à soi-même sa propre loi. C'est le contraire de l'Hétéronomie (obéir à une loi imposée par les autres).</li>
+                    <li><span class="concept-cle">La Licence</span> : C'est faire n'importe quoi selon ses désirs immédiats. Les philosophes disent que la licence n'est pas la liberté.</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>4. L'Exemple Concret (Le duel Sartre vs Spinoza)</h2>
+                
+                <p>Au BACC, on oppose souvent ces deux visions :</p>
+                
+                <p><span class="concept-cle">Jean-Paul Sartre</span> dit : « L'homme est condamné à être libre. » Même si tu es en prison, tu es libre de décider comment tu supportes ta prison. Pour lui, l'homme n'a pas de « nature » fixe, il se construit par ses choix.</p>
+                
+                <p><span class="concept-cle">Baruch Spinoza</span> répond : La liberté est une illusion. Il prend l'exemple d'une pierre qui tombe : si elle avait une conscience, elle croirait qu'elle tombe parce qu'elle l'a décidé. L'homme est comme cette pierre : il ignore les causes (instincts, passé, environnement) qui le poussent à agir.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>5. Le Piège à Éviter</h2>
+                
+                <p>Confondre « Liberté » et « Indépendance ».</p>
+                
+                <ul>
+                    <li>L'indépendance, c'est ne dépendre de personne (être seul sur une île).</li>
+                    <li>La liberté, c'est pouvoir agir au milieu des autres. On peut être libre en société, même s'il y a des lois. Comme le dit Montesquieu : « La liberté est le droit de faire tout ce que les lois permettent. »</li>
+                </ul>
+                
+                <div class="bloc-important">
+                    <p><strong>Exercice de réflexion rapide :</strong></p>
+                    <p>Un élève décide de ne pas réviser son BACC et d'aller jouer au foot toute la journée parce que « c'est son envie ».</p>
+                    <ul>
+                        <li>Est-ce qu'il utilise son Libre-arbitre ou est-ce qu'il suit sa Licence ?</li>
+                        <li>Selon toi, est-il vraiment libre, ou est-il l'esclave de son envie immédiate ?</li>
+                    </ul>
+                </div>
+            </section>
+        </article>
+        
+        <article class="partie">
+            <h1 id="lecon-4">LEÇON 4 : LA MORALE ET LE DEVOIR</h1>
+            
+            <section class="chapitre">
+                <h2>1. L'Idée en Bref (Le « Pitch »)</h2>
+                
+                <p>La morale, ce n'est pas juste être « gentil ». C'est l'ensemble des règles que l'on s'impose à soi-même pour distinguer le Bien du Mal. C'est répondre à la question : « Que dois-je faire ? »</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>2. L'Explication « Enfant de 10 ans »</h2>
+                
+                <p>Imagine que tu trouves un sac rempli de billets (des Ariary) perdu au marché, et personne ne t'a vu.</p>
+                
+                <p><span class="concept-cle">L'Instinct</span> : Te dit de le garder pour acheter un nouveau téléphone.</p>
+                
+                <p><span class="concept-cle">La Morale</span> : Te chuchote que cet argent appartient à quelqu'un qui en a peut-être besoin pour manger.</p>
+                
+                <div class="bloc-important">
+                    <p><strong>Si tu rends l'argent alors que rien ne t'y oblige physiquement, tu agis par Devoir.</strong> C'est ta « police intérieure » qui commande, pas la police du quartier.</p>
+                </div>
+            </section>
+            
+            <section class="chapitre">
+                <h2>3. Les Mots-Clés Techniques (À mettre sur la copie)</h2>
+                
+                <ul>
+                    <li><span class="concept-cle">L'Impératif Catégorique</span> : Terme de Kant. C'est une loi morale qui commande sans condition. (Ex: « Tu ne dois pas mentir », point final).</li>
+                    <li><span class="concept-cle">L'Utilitarisme</span> : Une idée qui dit qu'une action est bonne si elle apporte le plus grand bonheur au plus grand nombre de personnes.</li>
+                    <li><span class="concept-cle">La Conscience Morale</span> : Le juge intérieur qui nous fait ressentir de la fierté (si on agit bien) ou de la culpabilité/remords (si on agit mal).</li>
+                    <li><span class="concept-cle">Valeurs Universelles</span> : Des règles qui devraient être vraies pour tous les hommes, partout (ex: ne pas tuer).</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>4. L'Exemple Concret (Le duel Kant vs Mill)</h2>
+                
+                <p>C'est le débat classique au BACC :</p>
+                
+                <p><span class="concept-cle">Emmanuel Kant (Le Devoir pur)</span> : Pour lui, une action est morale seulement si tu la fais par pur respect pour la loi, même si ça ne te fait pas plaisir. Si tu aides une vieille dame juste pour qu'on te dise « merci », ce n'est pas de la morale pour Kant, c'est de l'intérêt.</p>
+                
+                <p><span class="concept-cle">John Stuart Mill (L'Utilitarisme)</span> : Pour lui, c'est le résultat qui compte. Si tu mens pour sauver la vie de quelqu'un, ton action est bonne car le résultat (une vie sauvée) est positif pour la société. Pour Kant, mentir reste mal, même pour sauver quelqu'un.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>5. Le Piège à Éviter</h2>
+                
+                <p>Confondre « Droit » et « Morale ».</p>
+                
+                <ul>
+                    <li>Le Droit, ce sont les lois écrites (si tu voles, tu vas en prison). C'est extérieur.</li>
+                    <li>La Morale, ce sont les lois du cœur. Tu peux être en règle avec la loi mais être quelqu'un d'immoral (par exemple, ignorer un ami qui a faim n'est pas interdit par la loi, mais c'est immoral).</li>
+                </ul>
+                
+                <div class="bloc-important">
+                    <p><strong>Résumé pour ta fiche :</strong></p>
+                    <ul>
+                        <li>Origine de la morale : Vient soit de la Raison (Kant), soit de la Société (Durkheim), soit du sentiment.</li>
+                        <li>Le but : Atteindre le Bien ou le Bonheur.</li>
+                        <li>Le dilemme : Faut-il suivre la règle strictement (Kant) ou regarder les conséquences (Mill) ?</li>
+                    </ul>
+                </div>
+                
+                <p><span class="concept-cle">Petit test pour « muscler » ton cerveau :</span> Imagine qu'un ami te demande de cacher qu'il a triché à un examen.</p>
+                <ul>
+                    <li>Si tu suis l'impératif catégorique de Kant (qui dit qu'on ne doit jamais mentir), que fais-tu ?</li>
+                    <li>Si tu es utilitariste (tu veux éviter que ton ami soit renvoyé et soit malheureux), que fais-tu ?</li>
+                </ul>
+            </section>
+        </article>
+        
+        <article class="partie">
+            <h1 id="lecon-5">LEÇON 5 : LE TRAVAIL ET LA TECHNIQUE</h1>
+            
+            <section class="chapitre">
+                <h2>1. L'Idée en Bref (Le « Pitch »)</h2>
+                
+                <p>Le travail est l'activité par laquelle l'homme transforme la nature pour satisfaire ses besoins. La technique, c'est l'ensemble des outils et des moyens qu'il invente pour être plus efficace.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>2. L'Explication « Enfant de 10 ans »</h2>
+                
+                <p>Imagine une forêt sauvage.</p>
+                
+                <p>L'animal y vit tel quel. S'il pleut, il s'abrite sous un arbre.</p>
+                
+                <p>L'homme, lui, utilise le travail. Il coupe du bois, taille des pierres et construit une maison. Il a transformé la nature pour qu'elle lui obéisse.</p>
+                
+                <div class="bloc-important">
+                    <p><strong>Pour aller plus vite, il invente la technique :</strong> au lieu de couper le bois à la main, il fabrique une scie, puis une machine. Le travail, c'est l'effort ; la technique, c'est l'intelligence appliquée à l'effort.</p>
+                </div>
+            </section>
+            
+            <section class="chapitre">
+                <h2>3. Les Mots-Clés Techniques (À placer sur ta copie)</h2>
+                
+                <ul>
+                    <li><span class="concept-cle">L'Aliénation</span> : Terme de Karl Marx. C'est quand le travail devient « inhumain » (ex: travailler à la chaîne à l'usine comme une machine). L'ouvrier devient étranger (alien) à lui-même.</li>
+                    <li><span class="concept-cle">L'Hominisation</span> : L'idée que c'est le travail qui a fait de nous des hommes (en développant notre cerveau et nos mains).</li>
+                    <li><span class="concept-cle">Le Progrès Technique</span> : L'évolution des outils qui permet de libérer l'homme des tâches pénibles.</li>
+                    <li><span class="concept-cle">La Raison Instrumentale</span> : Quand on utilise la technique sans réfléchir aux conséquences (ex: polluer la nature juste pour produire plus).</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>4. L'Exemple Concret (Le duel Marx vs Hegel)</h2>
+                
+                <p><span class="concept-cle">Hegel (Le travail libérateur)</span> : Il explique que par le travail, l'homme prend conscience de son pouvoir. En façonnant un objet, l'homme voit son intelligence « gravée » dans la matière. Le travail donne une dignité.</p>
+                
+                <p><span class="concept-cle">Karl Marx (Le travail qui rend esclave)</span> : Il est d'accord sur le principe, mais il dit que dans la société moderne (le capitalisme), le travail est devenu une torture. L'ouvrier ne travaille plus pour lui, mais pour un patron, et il perd sa joie de créer.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>5. Le Piège à Éviter</h2>
+                
+                <p>Croire que la Technique est « neutre ». Beaucoup d'élèves écrivent : « La technique est bonne ou mauvaise selon comment on l'utilise ». C'est un peu trop simple.</p>
+                
+                <div class="bloc-important">
+                    <p><strong>La réflexion plus profonde :</strong> La technique change notre façon de voir le monde. Par exemple, avec un smartphone, on ne communique plus de la même façon. La technique n'est pas juste un outil, c'est un nouveau milieu de vie.</p>
+                </div>
+                
+                <p><span class="concept-cle">Résumé pour ta fiche :</span></p>
+                <ul>
+                    <li>Côté Positif : Le travail nous sort de l'animalité, nous permet de dominer la nature et de collaborer avec les autres.</li>
+                    <li>Côté Négatif : La technique peut devenir dangereuse (bombes, pollution) et le travail peut devenir une souffrance s'il est mal organisé.</li>
+                </ul>
+                
+                <p><span class="concept-cle">Petit test de réflexion :</span> Aujourd'hui, avec l'Intelligence Artificielle ou les robots :</p>
+                <ul>
+                    <li>Est-ce que l'homme est libéré du travail (il peut enfin se reposer) ?</li>
+                    <li>Ou est-ce que l'homme devient inutile et perd sa dignité ?</li>
+                </ul>
+            </section>
+        </article>
+        
+        <article class="partie">
+            <h1 id="lecon-6">LEÇON 6 : L'ÉTAT ET LA JUSTICE</h1>
+            
+            <section class="chapitre">
+                <h2>1. L'Idée en Bref (Le « Pitch »)</h2>
+                
+                <p>L'État est une organisation politique qui exerce un pouvoir sur un peuple. Son but est d'assurer l'ordre, la sécurité et surtout la Justice, afin d'éviter que ce soit la « loi du plus fort » qui domine.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>2. L'Explication « Enfant de 10 ans »</h2>
+                
+                <p>Imagine un match de foot dans ton quartier.</p>
+                
+                <p>S'il n'y a pas d'arbitre, tout le monde va se battre, certains vont toucher le ballon de la main, et les plus grands vont pousser les plus petits. C'est le chaos.</p>
+                
+                <p>L'État, c'est l'arbitre. Il a un sifflet (les lois) et peut donner des cartons (les sanctions).</p>
+                
+                <div class="bloc-important">
+                    <p><strong>La Justice, c'est le respect des règles du jeu :</strong> pour que le match soit beau, il faut que les règles soient les mêmes pour tous, riches ou pauvres, forts ou faibles. Sans l'État (l'arbitre), il n'y a pas de liberté, il n'y a que de la violence.</p>
+                </div>
+            </section>
+            
+            <section class="chapitre">
+                <h2>3. Les Mots-Clés Techniques (À placer sur ta copie)</h2>
+                
+                <ul>
+                    <li><span class="concept-cle">Le Contrat Social</span> : L'idée que les hommes ont décidé de vivre ensemble en sacrifiant une partie de leur liberté sauvage en échange de la sécurité (Théorie de Hobbes, Locke et Rousseau).</li>
+                    <li><span class="concept-cle">La Souveraineté</span> : Le pouvoir suprême de l'État qui n'obéit à aucune autre autorité.</li>
+                    <li><span class="concept-cle">Le Droit Positif</span> : Les lois écrites créées par l'homme (ex: le Code Civil malgache).</li>
+                    <li><span class="concept-cle">Le Droit Naturel</span> : Les droits que tout homme possède dès sa naissance (ex: le droit de vivre, d'être libre).</li>
+                    <li><span class="concept-cle">L'Équité</span> : C'est une justice « intelligente ». Parfois, la loi est trop stricte, l'équité permet de l'adapter pour être vraiment juste selon la situation.</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>4. L'Exemple Concret (Le duel Hobbes vs Rousseau)</h2>
+                
+                <p>C'est le débat favori du BACC sur l'origine de l'État :</p>
+                
+                <p><span class="concept-cle">Thomas Hobbes (L'État pour la sécurité)</span> : Il pense qu'à l'état naturel, « l'homme est un loup pour l'homme ». On a besoin d'un État fort (le Léviathan) pour nous empêcher de nous entre-tuer.</p>
+                
+                <p><span class="concept-cle">Jean-Jacques Rousseau (L'État pour la liberté)</span> : Il pense que l'État doit être l'expression de la « Volonté Générale ». On n'obéit pas à un chef, on obéit à la loi qu'on a soi-même votée.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>5. Le Piège à Éviter</h2>
+                
+                <p>Confondre « Légal » et « Juste ».</p>
+                
+                <ul>
+                    <li>Quelque chose est légal si c'est écrit dans la loi.</li>
+                    <li>Quelque chose est juste si c'est moralement correct.</li>
+                </ul>
+                
+                <div class="bloc-important">
+                    <p><strong>Exemple :</strong> Pendant la colonisation ou l'esclavage, certaines lois étaient « légales » mais elles étaient profondément « injustes ». Le philosophe nous apprend qu'il faut parfois critiquer la loi si elle ne respecte plus la justice.</p>
+                </div>
+                
+                <p><span class="concept-cle">Résumé pour ta fiche :</span></p>
+                <ul>
+                    <li>L'État : Un mal nécessaire ? (Nécessaire pour la paix, mais peut devenir une dictature).</li>
+                    <li>La Justice : Donner à chacun ce qui lui est dû (Égalité des droits).</li>
+                    <li>Le but final : Le bien commun (le bien de tous les citoyens).</li>
+                </ul>
+                
+                <p><span class="concept-cle">Petit test de réflexion :</span> Imagine une ville où il n'y a plus aucune police, plus aucun tribunal et plus aucun gouvernement pendant un mois.</p>
+                <ul>
+                    <li>Est-ce que les gens seraient enfin « totalement libres » ?</li>
+                    <li>Ou est-ce que ce serait la fin de la liberté pour les plus faibles ?</li>
+                </ul>
+            </section>
+        </article>
+        
+        <article class="partie">
+            <h1 id="lecon-7">LEÇON 7 : LA SCIENCE ET LA VÉRITÉ</h1>
+            
+            <section class="chapitre">
+                <h2>1. L'Idée en Bref (Le « Pitch »)</h2>
+                
+                <p>La science est une recherche de la vérité basée sur des preuves et une méthode rigoureuse. Mais attention : la « vérité scientifique » n'est pas une vérité absolue ou magique ; c'est une vérité qui peut évoluer quand on fait de nouvelles découvertes.</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>2. L'Explication « Enfant de 10 ans »</h2>
+                
+                <p>Imagine que tu essaies de deviner ce qu'il y a dans une boîte fermée.</p>
+                
+                <p><span class="concept-cle">L'opinion</span> : Tu secoues la boîte et tu dis « Je pense que c'est un caillou » (sans preuve).</p>
+                
+                <p><span class="concept-cle">La Science</span> : Tu pèses la boîte, tu passes un aimant pour voir si c'est du fer, tu utilises des rayons X. Tu ne dis « C'est un caillou » que lorsque tu as accumulé des preuves que personne ne peut nier.</p>
+                
+                <div class="bloc-important">
+                    <p><strong>La science, c'est passer du « je crois » au « je prouve ».</strong></p>
+                </div>
+            </section>
+            
+            <section class="chapitre">
+                <h2>3. Les Mots-Clés Techniques (À placer sur ta copie)</h2>
+                
+                <ul>
+                    <li><span class="concept-cle">L'Objectivité</span> : Regarder la réalité telle qu'elle est, sans laisser parler ses sentiments ou ses préférences.</li>
+                    <li><span class="concept-cle">La Démonstration</span> : Un raisonnement logique (comme en Maths) qui prouve qu'une conclusion est vraie à partir de points de départ (axiomes).</li>
+                    <li><span class="concept-cle">L'Expérimentation</span> : Tester une idée dans la réalité (le laboratoire) pour voir si elle fonctionne.</li>
+                    <li><span class="concept-cle">Le Scientisme</span> : L'erreur de croire que la science peut répondre à TOUTES les questions (même sur Dieu ou le bonheur).</li>
+                    <li><span class="concept-cle">Falsifiabilité (ou Réfutabilité)</span> : Idée de Karl Popper. Une théorie est scientifique seulement si on peut imaginer une expérience qui prouverait qu'elle est fausse. Si elle n'est pas « testable », ce n'est pas de la science.</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>4. L'Exemple Concret (La méthode de Claude Bernard)</h2>
+                
+                <p>En SVT, on utilise souvent la méthode OHERIC :</p>
+                <ul>
+                    <li>Observation (Je vois quelque chose).</li>
+                    <li>Hypothèse (Je suppose une explication).</li>
+                    <li>Expérience (Je teste).</li>
+                    <li>Résultat (Je regarde ce qui se passe).</li>
+                    <li>Interprétation.</li>
+                    <li>Conclusion.</li>
+                </ul>
+                
+                <p>Le philosophe, lui, se demande : « Est-ce que nos sens ne nous trompent pas durant l'observation ? »</p>
+            </section>
+            
+            <section class="chapitre">
+                <h2>5. Le Piège à Éviter</h2>
+                
+                <p>Croire que la Science est la Vérité avec un grand « V » (éternelle). Au BACC, montre que la science progresse par « rectification d'erreurs » (Gaston Bachelard). La science d'hier (la Terre est plate) a été corrigée par celle d'aujourd'hui. La vérité scientifique est donc provisoire.</p>
+            </section>
+        </article>
+        
+        <article class="partie">
+            <h1>Conclusion de ton Programme</h1>
+            
+            <section class="chapitre">
+                <p>Félicitations ! Tu viens de parcourir les fondations du programme de Philosophie de la Terminale D.</p>
+                
+                <h2>Comment réussir maintenant ?</h2>
+                
+                <p>Maintenant que tu as compris les concepts (les idées), il te reste deux choses à faire pour avoir une excellente note :</p>
+                
+                <ul>
+                    <li><span class="concept-cle">La Méthodologie</span> : Apprendre à construire une Dissertation (Introduction, Plan, Conclusion).</li>
+                    <li><span class="concept-cle">L'Entraînement</span> : Pratiquer sur des anciens sujets du BACC Madagascar.</li>
+                </ul>
+                
+                <div class="bloc-important">
+                    <p><strong>Mon cadeau pour toi : La « Recette de la Dissertation » en 3 points</strong></p>
+                    <p>Pour n'importe quel sujet, utilise cette structure :</p>
+                    <ol>
+                        <li><strong>Oui...</strong> (Explique pourquoi l'idée semble vraie).</li>
+                        <li><strong>Mais...</strong> (Explique les limites ou le point de vue contraire).</li>
+                        <li><strong>Donc...</strong> (Fais une synthèse qui apporte une réponse intelligente).</li>
+                    </ol>
+                </div>
+            </section>
+        </article>
+        
+        <article class="partie">
+            <h1 id="resume-general">RÉSUMÉ GÉNÉRAL : TERMINALE D (PHILOSOPHIE)</h1>
+            
+            <section class="chapitre">
+                <h2>1. L'Homme (La Base)</h2>
+                <ul>
+                    <li><span class="concept-cle">L'idée</span> : L'homme est un « entre-deux ». Un corps (animal) et un esprit (conscience).</li>
+                    <li><span class="concept-cle">Le conflit</span> : La science voit une machine biologique ; la philosophie voit un sujet libre et pensant.</li>
+                    <li><span class="concept-cle">À retenir</span> : Ce qui nous définit, c'est la Raison et la Conscience.</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>2. La Conscience et l'Inconscient (Le Pilote)</h2>
+                <ul>
+                    <li><span class="concept-cle">La Conscience</span> : C'est la lumière (Descartes : « Je pense donc je suis »). Elle nous rend responsables.</li>
+                    <li><span class="concept-cle">L'Inconscient</span> : C'est la part d'ombre (Freud). Nos désirs cachés et nos traumatismes nous influencent sans qu'on le sache.</li>
+                    <li><span class="concept-cle">Le conflit</span> : Suis-je totalement maître de moi-même ?</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>3. La Liberté (Le Choix)</h2>
+                <ul>
+                    <li><span class="concept-cle">La Liberté</span> : Ce n'est pas faire n'importe quoi (Licence), c'est agir selon sa propre raison (Autonomie).</li>
+                    <li><span class="concept-cle">Le Déterminisme</span> : L'idée que nous sommes programmés (par nos gènes, notre éducation).</li>
+                    <li><span class="concept-cle">À retenir</span> : Pour Sartre, nous sommes « condamnés à être libres » (on n'a pas d'excuse).</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>4. La Morale et le Devoir (L'Action)</h2>
+                <ul>
+                    <li><span class="concept-cle">La Morale</span> : Distinguer le Bien du Mal.</li>
+                    <li><span class="concept-cle">Le Devoir</span> : L'obligation qu'on s'impose à soi-même.</li>
+                    <li><span class="concept-cle">Le conflit</span> : Agir par pur respect de la loi (Kant) OU agir pour le bonheur du plus grand nombre (Utilitarisme).</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>5. Le Travail et la Technique (La Transformation)</h2>
+                <ul>
+                    <li><span class="concept-cle">Le Travail</span> : Humanise l'homme et transforme la nature.</li>
+                    <li><span class="concept-cle">La Technique</span> : Outils qui augmentent notre puissance.</li>
+                    <li><span class="concept-cle">Le danger</span> : L'Aliénation (devenir l'esclave de la machine ou du patron).</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>6. L'État et la Justice (La Société)</h2>
+                <ul>
+                    <li><span class="concept-cle">L'État</span> : Un arbitre nécessaire pour éviter la guerre de tous contre tous (Contrat Social).</li>
+                    <li><span class="concept-cle">La Justice</span> : Égalité des droits et respect de la dignité humaine.</li>
+                    <li><span class="concept-cle">À retenir</span> : La loi doit être au service de la justice, sinon elle est tyrannique.</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>7. La Science et la Vérité (La Connaissance)</h2>
+                <ul>
+                    <li><span class="concept-cle">La Science</span> : Recherche objective et prouvée.</li>
+                    <li><span class="concept-cle">La Vérité</span> : En science, elle n'est jamais définitive, elle progresse en corrigeant des erreurs.</li>
+                    <li><span class="concept-cle">À retenir</span> : Ne pas confondre Croire (opinion) et Savoir (démonstration).</li>
+                </ul>
+            </section>
+            
+            <section class="chapitre">
+                <h2>Ta « Boussole » pour le BACC</h2>
+                
+                <p>Peu importe le sujet, demande-toi toujours :</p>
+                <ul>
+                    <li>Quel est le problème ? (Souvent un conflit entre deux leçons, ex: Travail vs Liberté).</li>
+                    <li>Que dirait la Raison ? (L'idée du « Oui »).</li>
+                    <li>Quelles sont les limites ? (L'idée du « Mais »).</li>
+                </ul>
+                
+                <div class="bloc-important">
+                    <p><strong>Le Petit Bonus : « L'Esprit Philo » en une phrase</strong></p>
+                    <p>« La philosophie ne consiste pas à apprendre beaucoup de choses, mais à apprendre à regarder chaque chose avec un œil critique pour ne plus être esclave des idées toutes faites. »</p>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer class="pied-de-page">
+        <p>Conçu pour une lecture attentive • Philosophie@teejayfanilo</p>
+    </footer>
+
+    <a href="#contenuPrincipal" class="bouton-retour-haut" aria-label="Retour en haut de page">↑</a>
+
+    <script>
+        // Gestion du menu mobile
+        const boutonSommaire = document.getElementById('boutonSommaire');
+        const sommaire = document.getElementById('sommaire');
+        
+        if (boutonSommaire) {
+            boutonSommaire.addEventListener('click', () => {
+                sommaire.classList.toggle('actif');
+            });
+        }
+        
+        // Fermer le menu quand on clique sur un lien (mobile uniquement)
+        const liensSommaire = sommaire.querySelectorAll('a');
+        liensSommaire.forEach(lien => {
+            lien.addEventListener('click', () => {
+                if (window.innerWidth < 1024) {
+                    sommaire.classList.remove('actif');
+                }
+            });
+        });
+        
+        // Fermer le menu si on clique en dehors (mobile)
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 1024 && 
+                !sommaire.contains(e.target) && 
+                !boutonSommaire.contains(e.target) &&
+                sommaire.classList.contains('actif')) {
+                sommaire.classList.remove('actif');
+            }
+        });
+        
+        // Scroll fluide vers les ancres
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Gestion du bouton "retour en haut"
+        const boutonRetour = document.querySelector('.bouton-retour-haut');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                boutonRetour.classList.add('visible');
+            } else {
+                boutonRetour.classList.remove('visible');
+            }
+        });
+    </script>
+</body>
+</html>

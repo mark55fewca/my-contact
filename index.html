@@ -9,10 +9,12 @@
         :root {
             --gold: #c9a84c;
             --gold-light: #f1d382;
+            --gold-bright: #ffe066;
             --dark-bg: #050505;
-            --card-bg: #0f0f0f;
+            --card-bg: rgba(15, 15, 15, 0.7);
             --text-main: #f5f2ec;
             --transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -28,6 +30,140 @@
             font-family: 'Montserrat', sans-serif;
             line-height: 1.6;
             overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- Canvas Background --- */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- Animated Gradient Background --- */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(201, 168, 76, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(201, 168, 76, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(50, 30, 0, 0.3) 0%, transparent 70%);
+            animation: gradientPulse 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientPulse {
+            0% { opacity: 0.6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* --- Water Wave Effect --- */
+        .wave-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent 0%, rgba(201, 168, 76, 0.03) 100%);
+        }
+
+        .wave svg {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .wave-path {
+            fill: none;
+            stroke: rgba(201, 168, 76, 0.15);
+            stroke-width: 1.5;
+            filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.3));
+        }
+
+        .wave-path-crest {
+            fill: none;
+            stroke: rgba(241, 211, 130, 0.4);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 15px rgba(241, 211, 130, 0.5));
+        }
+
+        /* --- Scroll Reveal Base --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+        .reveal-delay-5 { transition-delay: 0.5s; }
+        .reveal-delay-6 { transition-delay: 0.6s; }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(40px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.85);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
+        }
+
+        .reveal-scale.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         /* --- Perroquets Animés (Emblèmes) --- */
@@ -38,8 +174,9 @@
             z-index: 0;
             opacity: 0.15;
             pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(201, 168, 76, 0.3));
         }
-        
+
         .p-top { top: 20px; left: -20px; animation: bird-float 6s ease-in-out infinite; }
         .p-bottom { bottom: 20px; right: -20px; transform: scaleX(-1); animation: bird-float 6s ease-in-out infinite reverse; }
 
@@ -58,6 +195,7 @@
 
         header { text-align: center; margin-bottom: 3rem; }
 
+        /* --- Avatar avec effets spectaculaires --- */
         .avatar-container {
             position: relative;
             width: 140px;
@@ -73,8 +211,20 @@
             object-fit: cover;
             z-index: 2;
             position: relative;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                        box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px rgba(201, 168, 76, 0.2), 
+                        0 0 60px rgba(201, 168, 76, 0.1);
         }
 
+        .avatar-container:hover .avatar-img {
+            transform: scale(1.08) rotate(3deg);
+            box-shadow: 0 0 30px rgba(201, 168, 76, 0.5), 
+                        0 0 80px rgba(201, 168, 76, 0.3),
+                        0 0 120px rgba(201, 168, 76, 0.1);
+        }
+
+        /* Anneau pulsant permanent */
         .avatar-container::after {
             content: '';
             position: absolute;
@@ -85,11 +235,30 @@
             animation: pulse-ring 2s infinite;
         }
 
+        /* Halo doré rotatif */
+        .avatar-container::before {
+            content: '';
+            position: absolute;
+            inset: -15px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent, var(--gold), transparent, var(--gold-light), transparent);
+            opacity: 0.2;
+            animation: rotate-halo 4s linear infinite;
+            mask: radial-gradient(circle, transparent 65%, black 70%);
+            -webkit-mask: radial-gradient(circle, transparent 65%, black 70%);
+        }
+
         @keyframes pulse-ring {
             0% { transform: scale(0.95); opacity: 0.5; }
             100% { transform: scale(1.2); opacity: 0; }
         }
 
+        @keyframes rotate-halo {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- Titre avec typewriter et glow --- */
         .title-gold {
             font-family: 'Cinzel', serif;
             font-size: 1.7rem;
@@ -97,37 +266,122 @@
             letter-spacing: 4px;
             text-transform: uppercase;
             margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px rgba(201, 168, 76, 0.3), 
+                         0 0 30px rgba(201, 168, 76, 0.1);
+            animation: title-glow 3s ease-in-out infinite alternate;
+            position: relative;
+            display: inline-block;
         }
 
+        @keyframes title-glow {
+            0% { text-shadow: 0 0 10px rgba(201, 168, 76, 0.3), 0 0 30px rgba(201, 168, 76, 0.1); }
+            100% { text-shadow: 0 0 20px rgba(201, 168, 76, 0.6), 0 0 60px rgba(201, 168, 76, 0.2), 0 0 100px rgba(201, 168, 76, 0.1); }
+        }
+
+        /* Shimmer text effect */
+        .shimmer-text {
+            background: linear-gradient(90deg, var(--gold-light), var(--gold-bright), var(--gold-light));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% center; }
+            100% { background-position: -200% center; }
+        }
+
+        /* --- Bio Box avec glassmorphism --- */
         .bio-box {
             background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-left: 3px solid var(--gold);
             padding: 1.5rem;
             margin-bottom: 2.5rem;
             text-align: left;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bio-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .bio-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(201, 168, 76, 0.1), 
+                        0 0 20px rgba(201, 168, 76, 0.05);
+            border-left-color: var(--gold-light);
+        }
+
+        .bio-box:hover::before {
+            left: 100%;
         }
 
         .bio-text {
             font-family: 'Playfair Display', serif;
             font-size: 1rem;
             color: #ddd;
+            position: relative;
+            z-index: 1;
         }
 
-        /* --- Image Animée --- */
+        /* --- Image Frame avec effets --- */
         .picture-frame {
             width: 100%;
             border: 1px solid rgba(201, 168, 76, 0.2);
             overflow: hidden;
             margin-bottom: 1rem;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .picture-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(201, 168, 76, 0) 0%, rgba(201, 168, 76, 0.1) 50%, rgba(201, 168, 76, 0) 100%);
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.6s ease;
+            transform: translateX(-100%);
         }
 
         .picture-frame img {
             width: 100%;
             display: block;
-            transition: transform 1.5s ease;
+            transition: transform 1.5s ease, filter 0.6s ease;
         }
 
-        .picture-frame:hover img { transform: scale(1.1); }
+        .picture-frame:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 
+                        0 0 30px rgba(201, 168, 76, 0.15);
+        }
+
+        .picture-frame:hover img { 
+            transform: scale(1.1); 
+            filter: brightness(1.15) saturate(1.1);
+        }
+
+        .picture-frame:hover::before {
+            opacity: 1;
+            transform: translateX(100%);
+        }
 
         .desc-text {
             text-align: center;
@@ -156,6 +410,7 @@
             justify-content: center;
             gap: 15px;
             letter-spacing: 5px;
+            position: relative;
         }
 
         .private-access-title::before, .private-access-title::after {
@@ -164,28 +419,135 @@
             width: 40px;
             background: var(--gold);
             opacity: 0.3;
+            transition: width 0.4s ease, opacity 0.4s ease;
+        }
+
+        .private-access-title:hover::before, .private-access-title:hover::after {
+            width: 60px;
+            opacity: 0.8;
         }
 
         .contact-grid { display: grid; gap: 0.8rem; margin-bottom: 2rem; }
 
         .contact-card {
             background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.05);
             padding: 1.2rem;
             display: flex;
             align-items: center;
             text-decoration: none;
             color: white;
-            transition: 0.3s;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        border-color 0.4s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .contact-card:active { transform: scale(0.98); background: rgba(201, 168, 76, 0.1); }
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.08), transparent);
+            transition: left 0.5s ease;
+        }
 
-        .icon-box { width: 40px; color: var(--gold); margin-right: 1rem; display: flex; justify-content: center; align-items: center; }
+        .contact-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(201, 168, 76, 0.15), 
+                        0 0 30px rgba(201, 168, 76, 0.08);
+            border-color: rgba(201, 168, 76, 0.3);
+        }
 
-        .platform { font-size: 0.6rem; color: var(--gold); text-transform: uppercase; display: block; }
-        .value { font-size: 0.95rem; font-weight: 500; }
+        .contact-card:hover::before {
+            left: 100%;
+        }
 
+        .contact-card:active { 
+            transform: scale(0.98) translateY(-4px); 
+            background: rgba(201, 168, 76, 0.1); 
+        }
+
+        /* Ripple effect */
+        .contact-card .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(201, 168, 76, 0.3);
+            transform: scale(0);
+            animation: ripple-effect 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-effect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .icon-box { 
+            width: 40px; 
+            color: var(--gold); 
+            margin-right: 1rem; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            font-size: 1.4rem;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: icon-float 3s ease-in-out infinite;
+        }
+
+        .contact-card:hover .icon-box {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        @keyframes icon-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .platform { 
+            font-size: 0.6rem; 
+            color: var(--gold); 
+            text-transform: uppercase; 
+            display: block; 
+            letter-spacing: 2px;
+            transition: color 0.3s ease;
+        }
+
+        .contact-card:hover .platform {
+            color: var(--gold-light);
+        }
+
+        .value { 
+            font-size: 0.95rem; 
+            font-weight: 500;
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Animated underline for links */
+        .value::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .contact-card:hover .value::after {
+            width: 100%;
+        }
+
+        /* --- Save Button avec shine effect --- */
         .btn-save {
             display: block;
             background: var(--gold);
@@ -197,15 +559,115 @@
             font-weight: 700;
             letter-spacing: 2px;
             margin-top: 2rem;
-            transition: 0.3s;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        background 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .btn-save:hover { background: var(--gold-light); }
 
-        footer { text-align: center; padding: 3rem 0; opacity: 0.5; font-size: 0.7rem; border-top: 1px solid #111; }
+        .btn-save::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn-save:hover {
+            background: var(--gold-light);
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(201, 168, 76, 0.4), 
+                        0 0 60px rgba(201, 168, 76, 0.2);
+        }
+
+        .btn-save:hover::before {
+            left: 100%;
+        }
+
+        .btn-save:active {
+            transform: scale(0.97);
+        }
+
+        .btn-save .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple-effect 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        footer { 
+            text-align: center; 
+            padding: 3rem 0; 
+            opacity: 0.5; 
+            font-size: 0.7rem; 
+            border-top: 1px solid #111;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 1px;
+            background: var(--gold);
+            opacity: 0.5;
+            animation: footer-line 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes footer-line {
+            0% { width: 50px; opacity: 0.3; }
+            100% { width: 150px; opacity: 0.8; }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .parrot-anim { width: 80px; opacity: 0.1; }
+            .title-gold { font-size: 1.4rem; letter-spacing: 2px; }
+            .avatar-container { width: 120px; height: 120px; }
+            .contact-card { padding: 1rem; }
+            .wave-container { height: 120px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .reveal, .reveal-left, .reveal-right, .reveal-scale {
+                opacity: 1;
+                transform: none;
+            }
+            #particle-canvas { display: none; }
+        }
     </style>
+<base target="_blank">
 </head>
 <body>
+
+    <!-- Animated Gradient Background -->
+    <div class="gradient-bg"></div>
+
+    <!-- Particle Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- Water Wave Effect -->
+    <div class="wave-container">
+        <svg viewBox="0 0 1440 200" preserveAspectRatio="none" style="width:100%; height:100%;">
+            <path id="wave1" class="wave-path" d="" />
+            <path id="wave2" class="wave-path" d="" style="opacity:0.6;" />
+            <path id="wave3" class="wave-path-crest" d="" />
+        </svg>
+    </div>
 
     <!-- Perroquets SVG animés -->
     <svg class="parrot-anim p-top" viewBox="0 0 24 24" fill="var(--gold)">
@@ -217,26 +679,26 @@
 
     <div class="container">
         <header>
-            <div class="avatar-container">
+            <div class="avatar-container reveal-scale">
                 <img src="https://lh3.googleusercontent.com/d/1IiXbGnwEZ_LfZ-aZR6lYsmRgEn1mfPuB" alt="FANILO Augustino" class="avatar-img">
             </div>
-            <h1 class="title-gold">Teejay Fanilo</h1>
-            <div class="bio-box">
+            <h1 class="title-gold shimmer-text reveal">Teejay Fanilo</h1>
+            <div class="bio-box reveal reveal-delay-1">
                 <p class="bio-text">
                     Je me nomme <strong>FANILO Augustino</strong>, connu sous le pseudo <strong>TEEJAY FANILO</strong>. Si tu lis ceci, notre rencontre est une opportunité.
                 </p>
             </div>
-            <div class="picture-frame">
+            <div class="picture-frame reveal reveal-delay-2">
                 <img src="https://lh3.googleusercontent.com/d/1auXmpyC6oiQyPa8ZHpoWMh2pUbJs7-Km" alt="Portrait">
             </div>
-            <p class="desc-text">Visionnaire & Créateur d'Identité</p>
+            <p class="desc-text reveal reveal-delay-3">Visionnaire & Créateur d'Identité</p>
         </header>
 
-        <h2 class="private-access-title">PRIVATE ACCESS</h2>
+        <h2 class="private-access-title reveal">PRIVATE ACCESS</h2>
 
         <div class="contact-grid">
             <!-- APPEL DIRECT 1 -->
-            <a href="tel:0377404959" class="contact-card">
+            <a href="tel:0377404959" class="contact-card reveal-left reveal-delay-1">
                 <div class="icon-box">📞</div>
                 <div class="contact-info">
                     <span class="platform">Appel Direct (Airtel)</span>
@@ -245,7 +707,7 @@
             </a>
 
             <!-- APPEL DIRECT 2 -->
-            <a href="tel:0385576164" class="contact-card">
+            <a href="tel:0385576164" class="contact-card reveal-right reveal-delay-2">
                 <div class="icon-box">📞</div>
                 <div class="contact-info">
                     <span class="platform">Appel Direct (Telma)</span>
@@ -254,7 +716,7 @@
             </a>
 
             <!-- WHATSAPP -->
-            <a href="https://wa.me/qr/55RTQW3IXPBKF1" target="_blank" class="contact-card">
+            <a href="https://wa.me/qr/55RTQW3IXPBKF1" target="_blank" class="contact-card reveal-left reveal-delay-3">
                 <div class="icon-box">💬</div>
                 <div class="contact-info">
                     <span class="platform">WhatsApp</span>
@@ -263,7 +725,7 @@
             </a>
 
             <!-- EMAIL -->
-            <a href="mailto:marcalsson01fight@gmail.com" class="contact-card">
+            <a href="mailto:marcalsson01fight@gmail.com" class="contact-card reveal-right reveal-delay-4">
                 <div class="icon-box">✉️</div>
                 <div class="contact-info">
                     <span class="platform">Email Professionnel</span>
@@ -272,7 +734,7 @@
             </a>
 
             <!-- FACEBOOK -->
-            <a href="https://web.facebook.com/profile.php?id=61586978974779" target="_blank" class="contact-card">
+            <a href="https://web.facebook.com/profile.php?id=61586978974779" target="_blank" class="contact-card reveal-left reveal-delay-5">
                 <div class="icon-box">🌐</div>
                 <div class="contact-info">
                     <span class="platform">Facebook</span>
@@ -281,7 +743,7 @@
             </a>
 
             <!-- INSTAGRAM -->
-            <a href="https://www.instagram.com/teejayfanilo/" target="_blank" class="contact-card">
+            <a href="https://www.instagram.com/teejayfanilo/" target="_blank" class="contact-card reveal-right reveal-delay-6">
                 <div class="icon-box">📸</div>
                 <div class="contact-info">
                     <span class="platform">Instagram</span>
@@ -291,14 +753,291 @@
         </div>
 
         <!-- ENREGISTRER CONTACT -->
-        <a href="https://drive.google.com/uc?export=download&id=1FitzcMAfh_FjV9d1FCqKE4Ict0RhgZQF" class="btn-save">
+        <a href="https://drive.google.com/uc?export=download&id=1FitzcMAfh_FjV9d1FCqKE4Ict0RhgZQF" class="btn-save reveal reveal-delay-3">
             Enregistrer mon Contact
         </a>
 
-        <footer>
+        <footer class="reveal">
             <p>TEEJAY FANILO &middot; FANILO Augustino</p>
             <p>Madagascar - Toliara - 2026</p>
         </footer>
     </div>
+
+    <script>
+        // ==========================================
+        // PARTICLE SYSTEM (Canvas/WebGL-like)
+        // ==========================================
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null };
+        let animationId;
+
+        // Detect mobile
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const PARTICLE_COUNT = isMobile ? 30 : 80;
+        const CONNECTION_DISTANCE = isMobile ? 80 : 120;
+        const MOUSE_RADIUS = isMobile ? 80 : 150;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 0.5;
+                this.baseSize = this.size;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.hue = 40 + Math.random() * 20; // Gold hues
+                this.trail = [];
+                this.maxTrailLength = 8;
+            }
+
+            update() {
+                // Store trail
+                this.trail.push({ x: this.x, y: this.y });
+                if (this.trail.length > this.maxTrailLength) {
+                    this.trail.shift();
+                }
+
+                // Mouse interaction - particles flee from mouse
+                if (mouse.x !== null && mouse.y !== null) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < MOUSE_RADIUS) {
+                        const force = (MOUSE_RADIUS - distance) / MOUSE_RADIUS;
+                        const angle = Math.atan2(dy, dx);
+                        this.vx -= Math.cos(angle) * force * 0.8;
+                        this.vy -= Math.sin(angle) * force * 0.8;
+                        this.size = this.baseSize * (1 + force * 1.5);
+                    } else {
+                        this.size = this.baseSize;
+                    }
+                }
+
+                // Apply velocity with damping
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= 0.99;
+                this.vy *= 0.99;
+
+                // Add slight random movement
+                this.vx += (Math.random() - 0.5) * 0.02;
+                this.vy += (Math.random() - 0.5) * 0.02;
+
+                // Boundary wrap
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+
+            draw() {
+                // Draw trail
+                if (this.trail.length > 1) {
+                    ctx.beginPath();
+                    ctx.moveTo(this.trail[0].x, this.trail[0].y);
+                    for (let i = 1; i < this.trail.length; i++) {
+                        ctx.lineTo(this.trail[i].x, this.trail[i].y);
+                    }
+                    ctx.strokeStyle = `hsla(${this.hue}, 80%, 60%, ${this.opacity * 0.15})`;
+                    ctx.lineWidth = this.size * 0.5;
+                    ctx.stroke();
+                }
+
+                // Draw particle
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, 80%, 60%, ${this.opacity})`;
+                ctx.fill();
+
+                // Glow
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, 80%, 60%, ${this.opacity * 0.1})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < CONNECTION_DISTANCE) {
+                        const opacity = (1 - distance / CONNECTION_DISTANCE) * 0.15;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `hsla(45, 80%, 60%, ${opacity})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            drawConnections();
+
+            animationId = requestAnimationFrame(animateParticles);
+        }
+
+        // Mouse tracking
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // Touch support
+        window.addEventListener('touchmove', (e) => {
+            mouse.x = e.touches[0].clientX;
+            mouse.y = e.touches[0].clientY;
+        });
+
+        window.addEventListener('touchend', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // ==========================================
+        // WATER WAVE ANIMATION
+        // ==========================================
+        let scrollProgress = 0;
+        let waveTime = 0;
+
+        function updateWaves() {
+            const wave1 = document.getElementById('wave1');
+            const wave2 = document.getElementById('wave2');
+            const wave3 = document.getElementById('wave3');
+
+            if (!wave1) return;
+
+            const width = 1440;
+            const height = 200;
+            const scrollAmplitude = scrollProgress * 30;
+
+            function generateWavePath(offset, amplitude, frequency, phase) {
+                let path = `M0,${height} `;
+                for (let x = 0; x <= width; x += 10) {
+                    const y = height / 2 + 
+                              Math.sin((x * frequency) + phase + waveTime) * (amplitude + scrollAmplitude) +
+                              Math.sin((x * frequency * 0.5) + phase * 1.5) * (amplitude * 0.5);
+                    path += `L${x},${y} `;
+                }
+                path += `L${width},${height} Z`;
+                return path;
+            }
+
+            wave1.setAttribute('d', generateWavePath(0, 20, 0.01, 0));
+            wave2.setAttribute('d', generateWavePath(0, 15, 0.008, Math.PI));
+            wave3.setAttribute('d', generateWavePath(0, 10, 0.012, Math.PI * 0.5));
+
+            waveTime += 0.02;
+            requestAnimationFrame(updateWaves);
+        }
+
+        // Scroll tracking for wave amplitude
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            scrollProgress = docHeight > 0 ? scrollTop / docHeight : 0;
+        });
+
+        // ==========================================
+        // SCROLL REVEAL (IntersectionObserver)
+        // ==========================================
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // ==========================================
+        // RIPPLE EFFECT
+        // ==========================================
+        function createRipple(e, element) {
+            const ripple = document.createElement('span');
+            ripple.classList.add('ripple');
+
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+
+            element.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        document.querySelectorAll('.contact-card, .btn-save').forEach(el => {
+            el.addEventListener('click', (e) => createRipple(e, el));
+        });
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        if (!prefersReducedMotion) {
+            initParticles();
+            animateParticles();
+            updateWaves();
+        }
+
+        // Trigger initial reveals for above-fold elements
+        setTimeout(() => {
+            document.querySelectorAll('.reveal, .reveal-scale').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight) {
+                    el.classList.add('visible');
+                }
+            });
+        }, 100);
+    </script>
 </body>
 </html>
